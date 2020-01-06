@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import './Blog.css';
-import {Route,NavLink} from 'react-router-dom';
+import {Route,NavLink,Switch,Redirect} from 'react-router-dom';
+import AsyncComponent from '../../components/hoc/AsyncComponent';
 import Posts from '../Posts/Posts';
-import NewPost from '../NewPost/NewPost';
-import FullPost from '../FullPost/FullPost';
+// import NewPost from '../NewPost/NewPost';
+const AsyncNewPost=AsyncComponent(()=>import('../NewPost/NewPost'));
 class Blog extends Component {
+    state={
+        auth:true
+    }
     render () {
         return (
             <div>
@@ -12,13 +16,13 @@ class Blog extends Component {
                     <nav>
                         <ul>
                             <li><NavLink 
-                            to="/" 
+                            to="/posts" 
                             exact
                             activeClassName="my-active"
                             activeStyle={{
                                 color:'#fa923f',
                                 textDecoration:'underline'
-                            }}>Home</NavLink></li>
+                            }}>Posts</NavLink></li>
                             <li><NavLink to={{
                                 pathname:"/new-post",
                                 search:'?quick-search=true',
@@ -27,9 +31,12 @@ class Blog extends Component {
                         </ul>
                     </nav>
                 </header>
-                <Route path="/" exact component={Posts}/>
-                <Route path="/new-post" component={NewPost}/>
-                <Route path="/:id" exact component={FullPost}/>
+                <Switch>
+                {this.state.auth ? <Route path="/new-post" component={AsyncNewPost}/> :null}
+                <Route path="/posts" component={Posts}/>
+                {/* <Route render={()=><h1>No Path</h1>}/> */}
+                <Redirect from="/" to="/posts"/>
+                </Switch>
             </div>
         );
     }

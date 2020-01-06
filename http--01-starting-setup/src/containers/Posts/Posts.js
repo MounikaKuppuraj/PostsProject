@@ -3,7 +3,8 @@ import './Posts.css';
 import axios from '../../axios-instance';
 import Spinner from '../../components/Spinner/Spinner';
 import Post from '../../components/Post/Post';
-import { Link } from 'react-router-dom';
+import {Route} from 'react-router-dom';
+import FullPost from '../FullPost/FullPost';
 class Posts extends Component {
     state={
         posts:null
@@ -23,22 +24,31 @@ class Posts extends Component {
             this.setState({error:true})
         })
     }
+    selectPostHandler=(id)=>{
+        this.props.history.push(this.props.match.url+'/'+id);
+        //this.props.history.push({pathname:'/'+id});
+    }
     render() {
         let displayPosts=<Spinner/>
         if(this.state.posts){
             displayPosts=this.state.posts.map(post=>{
                 return (
-                <Link to={"/"+post.id} key={post.id}>
+                //<Link to={"/"+post.id}>
                 <Post 
+                key={post.id}
                 title={post.title} 
-                author={post.author}/>
-                </Link>)
-            })
+                author={post.author}
+                click={()=>this.selectPostHandler(post.id)}/>
+                //</Link>
+            )})
         }
         return (
+            <div>
             <section className="Posts">
                 {displayPosts}
             </section>
+            <Route path={this.props.match.url+'/:id'} component={FullPost}/>
+            </div>
         )
     }
 }

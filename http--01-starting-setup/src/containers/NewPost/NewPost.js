@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
 import axios from '../../axios-instance';
 import './NewPost.css';
-
 class NewPost extends Component {
     state = {
         title: '',
         content: '',
-        author: 'Max'
-    }
-    componentDidMount(){
-       const query=new URLSearchParams(this.props.location.search);
-       for (const params of query.entries()) {
-           console.log(params)
-       }
+        author: 'Max',
     }
     submitNewPost=()=>{
         const post={
@@ -22,7 +15,7 @@ class NewPost extends Component {
         }
         axios.post('/posts',post)
         .then(response=>{
-            console.log(response)
+          this.props.history.replace('/posts');
         })
     }
     render () {
